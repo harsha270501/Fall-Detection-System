@@ -29,11 +29,10 @@ def evaluate_model(
 
     # reshape data into time steps of sub-sequences
 
-    (n_steps, n_length) = (4, 32)
-    trainX = trainX.reshape((trainX.shape[0], n_steps, n_length,
-                            n_features))
-    testX = testX.reshape((testX.shape[0], n_steps, n_length,
-                          n_features))
+    (n_steps, n_length) = (5, 11)
+    print(trainX.shape,testX.shape)
+    trainX = trainX.reshape((trainX.shape[0], n_steps, n_length,n_features))
+    testX = testX.reshape((testX.shape[0], n_steps, n_length,n_features))
 
     # define model
 
@@ -58,3 +57,8 @@ def evaluate_model(
     model.fit(trainX, trainy, epochs=epochs, batch_size=batch_size,
               verbose=verbose)
     model.save('activity_recog')
+    # evaluate model
+
+    (_, accuracy) = model.evaluate(testX, testy, batch_size=batch_size,
+                                   verbose=2)
+    return accuracy

@@ -1,12 +1,13 @@
-from pandas import read_csv
+import pandas as pd
+import numpy as np
 from numpy import dstack
 from tensorflow.keras.utils import to_categorical
-
+from sklearn.model_selection import train_test_split
 
 # load a single file as a numpy array
 
 def load_file(filepath):
-    dataframe = read_csv(filepath, header=None, delim_whitespace=True)
+    dataframe = pd.read_csv(filepath, header=None, delim_whitespace=True)
     return dataframe.values
 
 
@@ -84,3 +85,55 @@ def load_dataset(prefix=''):
     testy = to_categorical(testy)
     print (trainX.shape, trainy.shape, testX.shape, testy.shape)
     return (trainX, trainy, testX, testy)
+
+
+def load_sample():
+    loaded = list()
+    filenames=['acc.csv','gyro.csv']
+    df_acc=pd.read_csv('acc.csv')
+    df_acc=df_acc.apply(pd.to_numeric)
+    df_acc_X=df_acc.iloc[:,:-2]
+    df_acc_Y=df_acc.iloc[:,-1]
+    
+
+    acc_train_X, acc_test_X, acc_train_Y, acc_test_Y = train_test_split(df_acc_X,df_acc_Y,test_size=0.30,random_state=42)
+
+    print(acc_train_X.shape, acc_train_Y.shape, acc_test_X.shape, acc_test_Y.shape)
+
+    df_gyro=pd.read_csv('gyro.csv')
+    df_gyro=df_gyro.apply(pd.to_numeric)
+    df_gyro_X=df_gyro.iloc[:,:-2]
+    df_gyro_Y=df_acc.iloc[:,-1]
+    
+    gyro_train_X, gyro_test_X, gyro_train_Y, gyro_test_Y = train_test_split(df_gyro_X,df_gyro_Y,test_size=0.30,random_state=42)
+
+    print(gyro_train_X.shape, gyro_train_Y.shape, gyro_test_X.shape, gyro_test_Y.shape)
+    
+    #print(acc_train_Y.equal(gyro_train_Y), acc_test_Y.equal(gyro_test_Y))
+    
+    trainX = list()
+    trainX.append(acc_train_X.values)
+    trainX.append(gyro_train_X.values)
+    trainX = dstack(trainX)
+
+    testX =list()
+    testX.append(acc_test_X.values)
+    testX.append(gyro_test_X.values)
+    testX=dstack(testX)
+
+    trainY = acc_train_Y.values
+    testY = acc_test_Y.values
+    
+    # zero-offset class values
+
+    trainY = trainY - 1
+    testY = testY - 1
+    print(trainY.shape,testY.shape)
+    # one hot encode y
+
+    trainY = to_categorical(trainY)
+    testY = to_categorical(testY)
+    print (trainX.shape, trainY.shape, testX.shape, testY.shape)
+    return (trainX, trainY, testX, testY)
+
+load_sample()

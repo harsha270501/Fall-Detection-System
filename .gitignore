@@ -1,0 +1,7 @@
+*.~lock*
+*.pyc*
+*.pb*
+*.data*
+*index*
+__pycache__
+activity_recog
