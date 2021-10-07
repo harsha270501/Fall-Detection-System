@@ -146,7 +146,8 @@ def main():
     df_acc=df_acc.append(extract_feature('../Dataset/sitting/sitting_acc.csv','a',6))
     df_acc=df_acc.append(extract_feature('../Dataset/standing/standing_acc.csv','a',7))
     df_acc=df_acc.append(extract_feature('../Dataset/walking/walking_acc.csv','a',8))
-    
+    df_acc=df_acc.append(extract_feature('../Dataset/getting_up_fast/getting_up_fast_acc.csv','a',9))
+
     df_ang=pd.DataFrame()
     df_ang=extract_feature('../Dataset/falling_1/falling_1_gyro.csv','w',1)
     df_ang=df_ang.append(extract_feature('../Dataset/falling_2/falling_2_gyro.csv','w',2))
@@ -156,10 +157,19 @@ def main():
     df_ang=df_ang.append(extract_feature('../Dataset/sitting/sitting_gyro.csv','w',6))
     df_ang=df_ang.append(extract_feature('../Dataset/standing/standing_gyro.csv','w',7))
     df_ang=df_ang.append(extract_feature('../Dataset/walking/walking_gyro.csv','w',8))
+    df_ang=df_ang.append(extract_feature('../Dataset/getting_up_fast/getting_up_fast_gyro.csv','w',9))
 
-    df_acc.to_csv('acc.csv',index=False)
+    df_acc.to_csv('../Dataset/acc.csv',index=False)
     df_acc.head()
-    df_ang.to_csv('gyro.csv',index=False)
+    df_ang.to_csv('../Dataset/gyro.csv',index=False)
     df_ang.head()
 
+    """
+    df_total=df_acc
+    for i in df_ang:
+        print(i)
+        if(i!='total'):
+            df_total[i]=df_ang[i].values
+    df_total.to_csv('../Dataset/total.csv',index=False)"""
+    
 main()
