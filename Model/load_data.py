@@ -3,6 +3,7 @@ import numpy as np
 from numpy import dstack
 from tensorflow.keras.utils import to_categorical
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 
 # load a single file as a numpy array
 
@@ -90,7 +91,7 @@ def load_dataset(prefix=''):
 def load_sample():
     loaded = list()
     #filenames=['acc.csv','gyro.csv']
-    df_acc=pd.read_csv('../Dataset/acc.csv')
+    df_acc=pd.read_csv('../Dataset/final.csv')
     df_acc=df_acc.apply(pd.to_numeric)
     df_acc_X=df_acc.iloc[:,:-2]
     df_acc_Y=df_acc.iloc[:,-1]
@@ -137,17 +138,19 @@ def load_sample():
     return (trainX, trainY, testX, testY)
 
 def load_sample_hierar():
-    df_acc=pd.read_csv('../Dataset/acc.csv')
-    df_acc=df_acc.apply(pd.to_numeric)
-    df_acc_X=df_acc.iloc[:,:-2]
-    df_acc_Y=df_acc.iloc[:,-1]
+    print("Inside hierarchical load data")
+    df=pd.read_csv('../Dataset/final.csv')
+    df=df.apply(pd.to_numeric)
+    scaler = StandardScaler()
+    df_X=df.iloc[:,:-2].values
+    scaler.fit(df_X)
+    df_X=scaler.transform(df_X)
+    df_Y=df.iloc[:,-1].values
     
-    acc_train_X, acc_test_X, acc_train_Y, acc_test_Y = train_test_split(df_acc_X,df_acc_Y,test_size=0.30,random_state=42)
-    print(acc_train_X.shape, acc_train_Y.shape, acc_test_X.shape, acc_test_Y.shape)
+    train_X, test_X, train_Y, test_Y = train_test_split(df_X,df_Y,test_size=0.30,random_state=42)
+    print(train_X.shape, train_Y.shape, test_X.shape, test_Y.shape)
 
-    trainX = acc_train_X.values
-    testX = acc_test_X.values
-    trainY = acc_train_Y.values
-    testY = acc_test_Y.values
-    return (trainX, trainY, testX, testY)
+    train_Y = train_Y - 1
+    test_Y = test_Y - 1
+    return (train_X, train_Y, test_X, test_Y)
 load_sample()

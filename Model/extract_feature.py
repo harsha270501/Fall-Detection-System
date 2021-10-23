@@ -3,24 +3,18 @@ import pandas as pd
 import numpy as np
 from scipy import stats
 
-def extract_feature(filename,sensortype,label):
+def extract_feature(filename,sensortype):
     df=pd.read_csv(filename)
-    df=df.iloc[:1000]
-    print(df.shape)
+    
     x_list=[]
     y_list=[]
     z_list=[]
     window_size=50
     step_size=25
     for i in range(0, df.shape[0] - window_size, step_size):
-        if(sensortype=='a'):
-            xs=df['ax (m/s^2)'].values[i:i+window_size]
-            ys=df['ay (m/s^2)'].values[i:i+window_size]
-            zs=df['az (m/s^2)'].values[i:i+window_size]
-        else:
-            xs=df['wx (rad/s)'].values[i:i+window_size]
-            ys=df['wy (rad/s)'].values[i:i+window_size]
-            zs=df['wz (rad/s)'].values[i:i+window_size]
+        xs=df['X'].values[i:i+window_size]
+        ys=df['Y'].values[i:i+window_size]
+        zs=df['Z'].values[i:i+window_size]
 
         x_list.append(xs)
         y_list.append(ys)
@@ -133,43 +127,74 @@ def extract_feature(filename,sensortype,label):
 
 
 
-    df_final['label']=[label]*df_final.shape[0]
+    
     return df_final
 
 def main():
-    df_acc=pd.DataFrame()
-    df_acc=extract_feature('../Dataset/falling_1/falling_1_acc.csv','a',1)
-    df_acc=df_acc.append(extract_feature('../Dataset/falling_2/falling_2_acc.csv','a',2))
-    df_acc=df_acc.append(extract_feature('../Dataset/bending/bending_acc.csv','a',3))
-    df_acc=df_acc.append(extract_feature('../Dataset/jumping/jumping_acc.csv','a',4))
-    df_acc=df_acc.append(extract_feature('../Dataset/running/running_acc.csv','a',5))
-    df_acc=df_acc.append(extract_feature('../Dataset/sitting/sitting_acc.csv','a',6))
-    df_acc=df_acc.append(extract_feature('../Dataset/standing/standing_acc.csv','a',7))
-    df_acc=df_acc.append(extract_feature('../Dataset/walking/walking_acc.csv','a',8))
-    df_acc=df_acc.append(extract_feature('../Dataset/getting_up_fast/getting_up_fast_acc.csv','a',9))
 
-    df_ang=pd.DataFrame()
-    df_ang=extract_feature('../Dataset/falling_1/falling_1_gyro.csv','w',1)
-    df_ang=df_ang.append(extract_feature('../Dataset/falling_2/falling_2_gyro.csv','w',2))
-    df_ang=df_ang.append(extract_feature('../Dataset/bending/bending_gyro.csv','w',3))
-    df_ang=df_ang.append(extract_feature('../Dataset/jumping/jumping_gyro.csv','w',4))
-    df_ang=df_ang.append(extract_feature('../Dataset/running/running_gyro.csv','w',5))
-    df_ang=df_ang.append(extract_feature('../Dataset/sitting/sitting_gyro.csv','w',6))
-    df_ang=df_ang.append(extract_feature('../Dataset/standing/standing_gyro.csv','w',7))
-    df_ang=df_ang.append(extract_feature('../Dataset/walking/walking_gyro.csv','w',8))
-    df_ang=df_ang.append(extract_feature('../Dataset/getting_up_fast/getting_up_fast_gyro.csv','w',9))
+    df_final= pd.DataFrame()
+    df_acc=extract_feature('../Dataset/Back_Fall/Accelerometer.csv','a')
+    df_ang=extract_feature('../Dataset/Back_Fall/Gyroscope.csv','w')
+    df_data= df_acc.join(df_ang)
+    df_data['label']=[1]*df_data.shape[0]
+    df_final=df_data
+    print(df_final.shape)
 
-    df_acc.to_csv('../Dataset/acc.csv',index=False)
-    df_acc.head()
-    df_ang.to_csv('../Dataset/gyro.csv',index=False)
-    df_ang.head()
-
-    """
-    df_total=df_acc
-    for i in df_ang:
-        print(i)
-        if(i!='total'):
-            df_total[i]=df_ang[i].values
-    df_total.to_csv('../Dataset/total.csv',index=False)"""
+    df_acc=extract_feature('../Dataset/Bending/Accelerometer.csv','a')
+    df_ang=extract_feature('../Dataset/Bending/Gyroscope.csv','w')
+    df_data= df_acc.join(df_ang)
+    df_data['label']=[2]*df_data.shape[0]
+    df_final=df_final.append(df_data)
+    print(df_final.shape)
     
+    df_acc=extract_feature('../Dataset/Front_Fall/Accelerometer.csv','a')
+    df_ang=extract_feature('../Dataset/Front_Fall/Gyroscope.csv','w')
+    df_data= df_acc.join(df_ang)
+    df_data['label']=[3]*df_data.shape[0]
+    df_final=df_final.append(df_data)
+    print(df_final.shape)
+
+    df_acc=extract_feature('../Dataset/Getting_Up_Fast/Accelerometer.csv','a')
+    df_ang=extract_feature('../Dataset/Getting_Up_Fast/Gyroscope.csv','w')
+    df_data= df_acc.join(df_ang)
+    df_data['label']=[4]*df_data.shape[0]
+    df_final=df_final.append(df_data)
+    print(df_final.shape)
+    df_acc=extract_feature('../Dataset/Jumping/Accelerometer.csv','a')
+    df_ang=extract_feature('../Dataset/Jumping/Gyroscope.csv','w')
+    df_data= df_acc.join(df_ang)
+    df_data['label']=[5]*df_data.shape[0]
+    df_final=df_final.append(df_data)
+    print(df_final.shape)
+    df_acc=extract_feature('../Dataset/Running/Accelerometer.csv','a')
+    df_ang=extract_feature('../Dataset/Running/Gyroscope.csv','w')
+    df_data= df_acc.join(df_ang)
+    df_data['label']=[6]*df_data.shape[0]
+    df_final=df_final.append(df_data)
+    print(df_final.shape)
+    df_acc=extract_feature('../Dataset/Side_Fall/Accelerometer.csv','a')
+    df_ang=extract_feature('../Dataset/Side_Fall/Gyroscope.csv','w')
+    df_data= df_acc.join(df_ang)
+    df_data['label']=[7]*df_data.shape[0]
+    df_final=df_final.append(df_data)
+    print(df_final.shape)
+    df_acc=extract_feature('../Dataset/Sitting/Accelerometer.csv','a')
+    df_ang=extract_feature('../Dataset/Sitting/Gyroscope.csv','w')
+    df_data= df_acc.join(df_ang)
+    df_data['label']=[8]*df_data.shape[0]
+    df_final=df_final.append(df_data)
+    print(df_final.shape)
+    df_acc=extract_feature('../Dataset/Standing/Accelerometer.csv','a')
+    df_ang=extract_feature('../Dataset/Standing/Gyroscope.csv','w')
+    df_data= df_acc.join(df_ang)
+    df_data['label']=[9]*df_data.shape[0]
+    df_final=df_final.append(df_data)
+    print(df_final.shape)
+    df_acc=extract_feature('../Dataset/Walking/Accelerometer.csv','a')
+    df_ang=extract_feature('../Dataset/Walking/Gyroscope.csv','w')
+    df_data= df_acc.join(df_ang)
+    df_data['label']=[10]*df_data.shape[0]
+    df_final=df_final.append(df_data)
+    print(df_final.shape)
+    df_final.to_csv("../Dataset/final.csv")
 main()
